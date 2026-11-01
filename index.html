@@ -336,81 +336,228 @@ body::before {
 }
 
 /* Hero Section */
+/* =====================================================
+   CINEMATIC HERO BANNER — Animated Sky + Particles
+   ===================================================== */
 .hero-banner {
-  background: var(--cd);
-  border: 1px solid var(--bd);
-  border-radius: 18px;
-  padding: 26px;
-  box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
   position: relative;
   overflow: hidden;
+  border-radius: 22px;
+  margin-bottom: 20px;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #0b1a2e 0%, #0f2944 40%, #1a1340 70%, #0d0b1f 100%);
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 24px 64px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(229,154,0,0.08);
 }
-.hero-banner::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 4px;
-  background: linear-gradient(90deg, #d92d20 0%, #e59a00 50%, #0d9488 100%);
+:root[data-theme="light"] .hero-banner {
+  background: linear-gradient(135deg, #0b1a2e 0%, #0f2944 40%, #1a1340 70%, #0d0b1f 100%);
 }
 
+/* Starfield canvas */
+#hero-stars-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+
+/* Animated gradient aurora overlay */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 70% 55% at 20% 60%, rgba(13,148,136,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 80% 30%, rgba(79,70,229,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 50% at 55% 80%, rgba(217,45,32,0.12) 0%, transparent 60%);
+  animation: heroAuroraShift 9s ease-in-out infinite alternate;
+}
+@keyframes heroAuroraShift {
+  0%   { opacity: 0.7; transform: scale(1) translateY(0); }
+  50%  { opacity: 1;   transform: scale(1.04) translateY(-8px); }
+  100% { opacity: 0.8; transform: scale(0.97) translateY(4px); }
+}
+
+/* Horizon glow line */
+.hero-horizon {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(229,154,0,0.6) 30%, rgba(13,148,136,0.8) 60%, transparent 100%);
+  z-index: 2;
+  animation: horizonPulse 3s ease-in-out infinite;
+}
+@keyframes horizonPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Floating meal emoji orbs */
+.hero-float-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.hero-orb {
+  position: absolute;
+  font-size: 28px;
+  filter: drop-shadow(0 0 12px rgba(229,154,0,0.5));
+  animation: heroOrbFloat linear infinite;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.hero-orb:nth-child(1)  { left:8%;  top:18%; font-size:22px; animation-duration:14s; animation-delay:0s;    animation-name:heroOrbFloat1; }
+.hero-orb:nth-child(2)  { left:18%; top:72%; font-size:26px; animation-duration:18s; animation-delay:2s;    animation-name:heroOrbFloat2; }
+.hero-orb:nth-child(3)  { left:78%; top:15%; font-size:20px; animation-duration:11s; animation-delay:0.5s;  animation-name:heroOrbFloat3; }
+.hero-orb:nth-child(4)  { left:88%; top:65%; font-size:24px; animation-duration:16s; animation-delay:3.5s;  animation-name:heroOrbFloat1; }
+.hero-orb:nth-child(5)  { left:52%; top:82%; font-size:18px; animation-duration:13s; animation-delay:1.2s;  animation-name:heroOrbFloat2; }
+.hero-orb:nth-child(6)  { left:65%; top:28%; font-size:22px; animation-duration:20s; animation-delay:4.5s;  animation-name:heroOrbFloat3; }
+@keyframes heroOrbFloat1 {
+  0%   { transform: translate(0,0) rotate(0deg);    opacity:0; }
+  8%   { opacity:0.75; }
+  50%  { transform: translate(12px,-22px) rotate(12deg); opacity:0.55; }
+  92%  { opacity:0.65; }
+  100% { transform: translate(-6px,8px) rotate(-5deg);  opacity:0; }
+}
+@keyframes heroOrbFloat2 {
+  0%   { transform: translate(0,0) scale(1);    opacity:0; }
+  10%  { opacity:0.6; }
+  55%  { transform: translate(-18px,-30px) scale(1.08); opacity:0.5; }
+  90%  { opacity:0.7; }
+  100% { transform: translate(8px,14px) scale(0.95); opacity:0; }
+}
+@keyframes heroOrbFloat3 {
+  0%   { transform: translate(0,0) rotate(-8deg); opacity:0; }
+  12%  { opacity:0.65; }
+  60%  { transform: translate(20px,-16px) rotate(6deg); opacity:0.45; }
+  88%  { opacity:0.6; }
+  100% { transform: translate(-10px,20px) rotate(-12deg); opacity:0; }
+}
+
+/* Hero content box */
+.hero-content {
+  position: relative;
+  z-index: 3;
+  padding: 40px 36px 36px;
+  max-width: 780px;
+}
+@media (max-width:600px) { .hero-content { padding: 28px 20px 24px; } }
+
+/* Badge pill */
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11.5px;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #b42318;
-  background: var(--jal-red-tint);
-  border: 1px solid rgba(217, 45, 32, 0.2);
-  padding: 4px 12px;
+  letter-spacing: 0.1em;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.3);
+  padding: 5px 14px;
   border-radius: 999px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
+  animation: badgeFadeIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+  backdrop-filter: blur(6px);
 }
-:root[data-theme="dark"] .hero-badge { color: #f87171; border-color: rgba(248, 113, 113, 0.3); }
+.hero-badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
+  animation: badgeDot 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes badgeDot {
+  0%,100% { transform: scale(1); opacity:1; }
+  50% { transform: scale(1.5); opacity:0.6; }
+}
+@keyframes badgeFadeIn {
+  from { opacity:0; transform: translateY(10px); }
+  to   { opacity:1; transform: translateY(0); }
+}
 
+/* Headline — word-by-word reveal */
 .hero-headline {
   font-family: var(--font-head);
-  font-size: 32px;
-  line-height: 1.15;
+  font-size: clamp(26px, 4vw, 44px);
+  line-height: 1.1;
   font-weight: 800;
-  letter-spacing: -0.025em;
-  margin: 0 0 10px;
-  color: var(--ink);
+  letter-spacing: -0.03em;
+  margin: 0 0 14px;
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.4);
 }
-.hero-sub {
-  color: var(--mu);
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0 0 20px;
-  max-width: 78ch;
+.hero-headline .hl-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: wordReveal 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes wordReveal {
+  to { opacity:1; transform:translateY(0); }
+}
+.hero-headline .hl-accent {
+  background: linear-gradient(90deg, #fbbf24, #f87171, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* 4-Step Touchpoints Bar */
+.hero-sub {
+  color: rgba(255,255,255,0.7);
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0 0 26px;
+  max-width: 68ch;
+  animation: heroSubFade 0.7s cubic-bezier(0.16,1,0.3,1) 0.75s both;
+}
+@keyframes heroSubFade {
+  from { opacity:0; transform: translateY(12px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* 4-Step Touchpoints Bar — dark glass style inside cinematic hero */
 .touchpoints-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
-  background: var(--cd-subtle);
-  border: 1px solid var(--bd);
-  border-radius: 14px;
-  padding: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 10px;
+  backdrop-filter: blur(8px);
+  animation: heroSubFade 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both;
 }
 .tp-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 10px;
+  padding: 8px 10px;
   border-radius: 10px;
-  background: var(--cd);
-  border: 1px solid var(--bd-light);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.tp-item:hover {
+  background: rgba(229,154,0,0.12);
+  border-color: rgba(229,154,0,0.3);
+  transform: translateY(-2px);
 }
 .tp-num {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--jal-red), var(--jal-gold));
+  background: linear-gradient(135deg, #d92d20, #e59a00);
   color: #fff;
   font-size: 12px;
   font-weight: 800;
@@ -418,9 +565,10 @@ body::before {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(229,154,0,0.4);
 }
-.tp-text b { display: block; font-size: 12.5px; color: var(--ink); line-height: 1.25; }
-.tp-text span { font-size: 11.5px; color: var(--mu); }
+.tp-text b { display: block; font-size: 12px; color: rgba(255,255,255,0.92); line-height: 1.25; }
+.tp-text span { font-size: 11px; color: rgba(255,255,255,0.5); }
 
 /* Quick Demo Bar */
 .quick-demo-bar {
@@ -4624,21 +4772,44 @@ if(!role){app.innerHTML=`<div class="app-layout">${sidebarHtml()}<div class="app
   </div>
 </header>
 
-<div class="hero-banner">
+<div class="hero-banner" id="hero-banner">
+  <!-- Starfield canvas -->
+  <canvas id="hero-stars-cv" aria-hidden="true"></canvas>
+  <!-- Aurora overlay -->
+  <div class="hero-aurora" aria-hidden="true"></div>
+  <!-- Floating food orbs -->
+  <div class="hero-float-orbs" aria-hidden="true">
+    <span class="hero-orb">🍱</span>
+    <span class="hero-orb">✈️</span>
+    <span class="hero-orb">🥗</span>
+    <span class="hero-orb">🛩️</span>
+    <span class="hero-orb">🍛</span>
+    <span class="hero-orb">🌸</span>
+  </div>
+  <!-- Horizon glow -->
+  <div class="hero-horizon" aria-hidden="true"></div>
+
   <div class="hero-content">
-    <div class="hero-badge">✈️ Japan Airlines In-Flight Challenge • Multi-Touchpoint Solution</div>
-    <h1 class="hero-headline">Dynamic Dietary Intelligence for <br>
-      <span class="rotating-text-wrap">
-        <span class="rotating-text-track">
-          <span class="rotate-item color-teal">Indian Passengers</span>
-          <span class="rotate-item color-gold">Strict Jain &amp; Sattvik Diets</span>
-          <span class="rotate-item color-red">Zero Cabin Food Waste</span>
-          <span class="rotate-item color-blue">Multi-Screen Airlines</span>
+    <div class="hero-badge">Japan Airlines In-Flight Challenge • Multi-Touchpoint Solution</div>
+    <h1 class="hero-headline">
+      <span class="hl-word" style="animation-delay:0.3s">Dynamic</span>
+      <span class="hl-word" style="animation-delay:0.42s">Dietary</span>
+      <span class="hl-word" style="animation-delay:0.54s">Intelligence</span>
+      <span class="hl-word" style="animation-delay:0.66s">for</span>
+      <br>
+      <span class="hl-word hl-accent" style="animation-delay:0.78s">
+        <span class="rotating-text-wrap">
+          <span class="rotating-text-track">
+            <span class="rotate-item">Indian Passengers</span>
+            <span class="rotate-item">Strict Jain &amp; Sattvik Diets</span>
+            <span class="rotate-item">Zero Cabin Food Waste</span>
+            <span class="rotate-item">Multi-Screen Airlines</span>
+          </span>
         </span>
       </span>
     </h1>
-    <p class="hero-sub">Accommodating diverse cultural, religious, regional, and health preferences throughout the flight lifecycle. Engineered around two breakthrough innovations: <b>JAL Lounge Ghost Kitchens</b> for late requests and <b>In-Flight Meal Exchange</b> to eliminate cabin food waste.</p>
-    
+    <p class="hero-sub">Accommodating diverse cultural, religious, regional, and health preferences throughout the flight lifecycle. Engineered around two breakthrough innovations: <b style="color:#fbbf24">JAL Lounge Ghost Kitchens</b> for late requests and <b style="color:#34d399">In-Flight Meal Exchange</b> to eliminate cabin food waste.</p>
+
     <div class="touchpoints-strip">
       <div class="tp-item">
         <span class="tp-num">1</span>
@@ -4785,6 +4956,50 @@ bindTryButtons();
 bindHead();
 bindDemo();
 bindFlightExperience();
+// Re-init hero starfield after render() injects the canvas
+(function reInitHeroStars(){
+  const cv = document.getElementById('hero-stars-cv');
+  if(!cv) return;
+  const banner = cv.parentElement;
+  const dpr = Math.min(window.devicePixelRatio||1,2);
+  let W,H,cx,stars=[],shooters=[],lastShoot=0;
+  function resize(){
+    const r=banner.getBoundingClientRect();
+    W=r.width||window.innerWidth; H=r.height||380;
+    cv.width=W*dpr; cv.height=H*dpr;
+    cv.style.width=W+'px'; cv.style.height=H+'px';
+    cx=cv.getContext('2d'); cx.scale(dpr,dpr);
+    const n=Math.floor(W*H/1800);
+    stars=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:0.3+Math.random()*1.3,a:0.2+Math.random()*0.7,phase:Math.random()*Math.PI*2}));
+    shooters=[];
+  }
+  function frame(t){
+    if(!document.getElementById('hero-stars-cv'))return;
+    cx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      const alpha=s.a*(0.55+0.45*Math.sin(t*0.0008+s.phase));
+      cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      cx.fillStyle='rgba(255,255,255,'+alpha.toFixed(2)+')';cx.fill();
+    });
+    if(t-lastShoot>2500+Math.random()*3500){
+      shooters.push({x:W*0.1+Math.random()*W*0.8,y:Math.random()*H*0.4,vx:3+Math.random()*5,vy:1.5+Math.random()*3,len:80+Math.random()*100,life:1,dec:0.012+Math.random()*0.016});
+      lastShoot=t;
+    }
+    shooters=shooters.filter(s=>{
+      s.x+=s.vx;s.y+=s.vy;s.life-=s.dec;if(s.life<=0)return false;
+      const mag=Math.hypot(s.vx,s.vy);
+      const g=cx.createLinearGradient(s.x,s.y,s.x-s.len*s.vx/mag,s.y-s.len*s.vy/mag);
+      g.addColorStop(0,'rgba(255,240,180,'+(s.life*0.9).toFixed(2)+')');
+      g.addColorStop(1,'rgba(255,255,255,0)');
+      cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-s.len*s.vx/mag,s.y-s.len*s.vy/mag);
+      cx.strokeStyle=g;cx.lineWidth=1.5;cx.stroke();return true;
+    });
+    requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize',resize);
+  resize();
+  requestAnimationFrame(frame);
+})();
 return}
 role=='p'?passenger():role=='m'?planner():role=='l'?lounge():role=='g'?gate():crew()}
 function sidebarHtml(){
@@ -5859,6 +6074,104 @@ function initLivingSkyAndFlightAnimations() {
 }
 
 initLivingSkyAndFlightAnimations();
+
+/* ======================================================================
+   HERO STARFIELD CANVAS — procedural star + shooting star animation
+   ====================================================================== */
+(function initHeroStars() {
+  function setup() {
+    const cv = document.getElementById('hero-stars-cv');
+    if (!cv) return;
+    const banner = cv.parentElement;
+    let W, H, cx, stars, shooters;
+
+    function resize() {
+      const r = banner.getBoundingClientRect();
+      W = r.width  || window.innerWidth;
+      H = r.height || 380;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width  = W * dpr;
+      cv.height = H * dpr;
+      cv.style.width  = W + 'px';
+      cv.style.height = H + 'px';
+      cx = cv.getContext('2d');
+      cx.scale(dpr, dpr);
+      buildStars();
+    }
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function buildStars() {
+      const n = Math.floor(W * H / 1800);
+      stars = Array.from({ length: n }, () => ({
+        x: rnd(0, W), y: rnd(0, H),
+        r: rnd(0.3, 1.6),
+        a: rnd(0.2, 0.9),
+        speed: rnd(0.0003, 0.001),
+        phase: rnd(0, Math.PI * 2)
+      }));
+      shooters = [];
+    }
+
+    function spawnShooter() {
+      shooters.push({
+        x: rnd(W * 0.1, W * 0.9), y: rnd(0, H * 0.4),
+        vx: rnd(3, 7), vy: rnd(1.5, 3.5),
+        len: rnd(80, 160), life: 1, dec: rnd(0.012, 0.022)
+      });
+    }
+
+    let lastShoot = 0;
+    function frame(t) {
+      if (!document.getElementById('hero-stars-cv')) return;
+      cx.clearRect(0, 0, W, H);
+
+      // Static stars with twinkle
+      stars.forEach(s => {
+        const alpha = s.a * (0.55 + 0.45 * Math.sin(t * 0.001 * s.speed * 6000 + s.phase));
+        cx.beginPath();
+        cx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        cx.fillStyle = `rgba(255,255,255,${alpha.toFixed(2)})`;
+        cx.fill();
+      });
+
+      // Shooting stars
+      if (t - lastShoot > rnd(2500, 6000)) {
+        spawnShooter();
+        lastShoot = t;
+      }
+      shooters = shooters.filter(s => {
+        s.x += s.vx; s.y += s.vy; s.life -= s.dec;
+        if (s.life <= 0) return false;
+        const grad = cx.createLinearGradient(s.x, s.y, s.x - s.vx * s.len / s.vx, s.y - s.vy * s.len / s.vx);
+        grad.addColorStop(0, `rgba(255,240,180,${(s.life * 0.9).toFixed(2)})`);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        cx.beginPath();
+        cx.moveTo(s.x, s.y);
+        cx.lineTo(s.x - s.len * (s.vx / Math.hypot(s.vx, s.vy)),
+                  s.y - s.len * (s.vy / Math.hypot(s.vx, s.vy)));
+        cx.strokeStyle = grad;
+        cx.lineWidth = 1.5;
+        cx.stroke();
+        return true;
+      });
+
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(frame);
+  }
+
+  // Run immediately and also re-run after render() injects the banner
+  setup();
+  // Observe DOM for hero-stars-cv in case render() hasn't fired yet
+  const obs = new MutationObserver(() => {
+    if (document.getElementById('hero-stars-cv')) { setup(); obs.disconnect(); }
+  });
+  obs.observe(document.getElementById('app') || document.body, { childList: true, subtree: true });
+})();
 
 
 /* ======================================================================

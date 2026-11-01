@@ -2752,6 +2752,327 @@ summary { cursor: pointer; color: var(--tu); font-size: 13px; font-weight: 600; 
   [data-tilt] { transform: none !important; transition: none !important; }
 }
 
+/* ======================================================================
+   SCROLLING FLIGHTBAR, ROUTE JET, & 3D MENU CAROUSEL (From SkyBite Reference)
+   ====================================================================== */
+.flightbar {
+  position: sticky;
+  top: 0; left: 0; right: 0;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(16px, 4vw, 36px);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--tx, #14212e);
+  z-index: 100;
+  background: var(--cd, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--bd, #e2e8f0);
+}
+:root[data-theme="dark"] .flightbar {
+  background: rgba(13, 22, 32, 0.92);
+  color: #e8eef3;
+  border-bottom-color: #2a3b4a;
+}
+.fb-city { font-weight: 800; font-size: 0.8rem; }
+.fb-track {
+  flex: 1;
+  height: 3px;
+  background: var(--bd, #e2e8f0);
+  margin: 0 16px;
+  position: relative;
+  border-radius: 99px;
+}
+:root[data-theme="dark"] .fb-track { background: #2a3b4a; }
+.fb-done {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%; width: 100%;
+  background: linear-gradient(90deg, #d92d20, #e59a00 50%, #0d9488 100%);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  border-radius: 99px;
+}
+.fb-plane {
+  position: absolute;
+  top: 50%; left: 0%;
+  width: 28px; height: 16px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 6px rgba(229, 154, 0, 0.8));
+}
+
+/* Flight Route Section â€” Plane flies along route curve as user scrolls */
+.flight-route-section {
+  position: relative;
+  min-height: 440px;
+  height: 58vh;
+  margin: 18px 0 24px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0f243d 0%, #17375e 60%, #1e4575 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.35);
+}
+:root[data-theme="dark"] .flight-route-section {
+  background: linear-gradient(180deg, #091322 0%, #0e2038 60%, #152b47 100%);
+}
+.flight-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+}
+.flight-copy {
+  position: absolute;
+  top: 24px; left: 28px; right: 28px;
+  z-index: 5;
+  color: #ffffff;
+  pointer-events: none;
+}
+.flight-copy .kicker {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #fbbf24;
+  background: rgba(11, 22, 48, 0.65);
+  padding: 5px 12px;
+  border-radius: 99px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  margin-bottom: 8px;
+}
+.flight-copy h2 {
+  font-family: var(--font-head, 'Outfit', serif);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+.flight-copy h2 em { color: #fbbf24; font-style: italic; }
+.flight-copy p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 580px;
+  line-height: 1.5;
+  margin: 0;
+}
+.route {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.route path { fill: none; stroke-linecap: round; }
+.route-base {
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 2.5;
+  stroke-dasharray: 4 10;
+}
+.route-trail {
+  stroke: rgba(251, 191, 36, 0.75);
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));
+}
+.route-done {
+  stroke: #fbbf24;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.9));
+}
+.plane {
+  position: absolute;
+  left: 0; top: 0;
+  width: 125px;
+  will-change: transform;
+  pointer-events: none;
+  filter: drop-shadow(0 calc(10px + var(--alt, 0) * 36px) calc(8px + var(--alt, 0) * 18px) rgba(0, 0, 0, calc(0.35 + var(--alt, 0) * 0.2)));
+  z-index: 4;
+}
+.plane svg { display: block; width: 100%; height: auto; }
+.city {
+  position: absolute;
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  display: grid;
+  gap: 2px;
+  z-index: 5;
+  pointer-events: none;
+}
+.city small {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  color: #fbbf24;
+}
+.city b {
+  font-family: var(--font-head, 'Outfit', serif);
+  font-size: 2.1rem;
+  line-height: 1;
+}
+.city span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+.city.from { left: 32px; bottom: 70px; }
+.city.to { right: 32px; top: 52%; text-align: right; }
+.flight-meta {
+  position: absolute;
+  left: 50%; bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(12px, 2.5vw, 32px);
+  padding: 10px 22px;
+  border-radius: 99px;
+  background: rgba(11, 22, 48, 0.78);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  white-space: nowrap;
+  z-index: 6;
+  color: #ffffff;
+}
+.flight-meta span { display: grid; gap: 2px; }
+.flight-meta small {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  color: #fbbf24;
+  font-weight: 700;
+}
+.flight-meta b { font-size: 0.88rem; font-weight: 700; }
+.flight-meta .status { display: flex; align-items: center; gap: 6px; }
+.flight-meta .status i {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  display: inline-block;
+  animation: pulse-dot 1.5s infinite;
+}
+
+/* 3D Horizontal Menu Carousel driven by Vertical Scroll */
+.menu-carousel-section {
+  margin: 32px 0 28px;
+}
+.menu-carousel-head { margin-bottom: 18px; }
+.menu-carousel-head .kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--tu, #e59a00);
+  display: inline-block;
+  margin-bottom: 4px;
+}
+.menu-carousel-head h2 {
+  font-family: var(--font-head, 'Outfit', serif);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: var(--ink, #09131f);
+}
+.menu-carousel-head h2 em { color: var(--tu, #e59a00); font-style: italic; }
+.menu-carousel-head p {
+  color: var(--mu, #64748b);
+  font-size: 0.95rem;
+  margin: 0;
+}
+.menu-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  overflow: hidden;
+  padding: 24px 0 36px;
+}
+.menu-track {
+  display: flex;
+  gap: 22px;
+  width: max-content;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+.mcard {
+  flex: 0 0 300px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--cd, #ffffff);
+  border: 1px solid var(--bd, #e2e8f0);
+  box-shadow: var(--shadow-md, 0 8px 24px -4px rgba(0, 0, 0, 0.08));
+  will-change: transform;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+:root[data-theme="dark"] .mcard {
+  background: var(--cd, #15222f);
+  border-color: #2a3b4a;
+}
+.mcard:hover {
+  box-shadow: 0 20px 40px -10px color-mix(in srgb, var(--meal, #e59a00) 40%, rgba(0, 0, 0, 0.25));
+  border-color: var(--meal, #e59a00);
+}
+.mcard-art {
+  position: relative;
+  height: 180px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--meal, #e59a00) 25%, transparent), transparent 70%), rgba(0, 0, 0, 0.03);
+}
+:root[data-theme="dark"] .mcard-art {
+  background: radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--meal, #e59a00) 35%, transparent), transparent 70%), #101c2a;
+}
+.mcard-art .num {
+  position: absolute;
+  top: 14px; left: 16px;
+  font-family: var(--font-head, serif);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--meal, #e59a00);
+}
+.mcard-art .art {
+  width: 96px;
+  filter: drop-shadow(0 14px 14px rgba(0, 0, 0, 0.18));
+  transition: transform 0.4s ease;
+}
+.mcard:hover .art {
+  transform: translateY(-6px) rotate(-4deg) scale(1.06);
+}
+.mcard-body {
+  padding: 16px 20px 20px;
+  display: grid;
+  gap: 6px;
+}
+.mcard-body small {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+  color: var(--meal, #e59a00);
+}
+.mcard-body h3 {
+  font-family: var(--font-head, 'Outfit', serif);
+  font-size: 1.15rem;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--ink, #09131f);
+}
+.mcard-body p {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--mu, #64748b);
+  margin: 0;
+  min-height: 3.6em;
+}
+.mcard-go {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--meal, #e59a00);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 </style></head><body>
 
 
@@ -3173,6 +3494,27 @@ summary { cursor: pointer; color: var(--tu); font-size: 13px; font-weight: 600; 
 <!-- Interactive Custom Cursor -->
 <div class="custom-cursor-dot" id="cursor-dot"></div>
 <div class="custom-cursor-ring" id="cursor-ring"></div>
+<!-- SkyBite Shared Airliner SVG Symbol from _plane.html -->
+<svg width="0" height="0" style="position:absolute;display:none" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="sbf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#f3f5f9"/><stop offset="1" stop-color="#bcc5d3"/></linearGradient>
+  <linearGradient id="sbw" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eef1f6"/><stop offset="1" stop-color="#b7c0ce"/></linearGradient>
+  <symbol id="sb-plane" viewBox="0 0 240 120">
+    <g id="sb-half" stroke="#8c9ab0" stroke-width=".7" stroke-linejoin="round">
+      <path d="M160 53 L96 5 L80 5 L108 53Z" fill="url(#sbw)"/>
+      <path d="M85.6 14.6 L106.6 50.6 L115.6 50.6 L94.6 14.6Z" fill="#cdd5e0" stroke="none"/>
+      <path d="M80 5 L74 1.5 L78 1.5 L87 5Z" fill="#c9a35e" stroke="none"/>
+      <rect x="108" y="22.4" width="27" height="9.2" rx="4.6" fill="url(#sbf)"/>
+      <ellipse cx="134.2" cy="27" rx="2.1" ry="4" fill="#2a3140" stroke="none"/>
+      <path d="M48 54 L22 31 L14 31 L30 54Z" fill="url(#sbw)"/>
+    </g>
+    <use href="#sb-half" transform="translate(0 120) scale(1 -1)"/>
+    <path d="M237 60 C233 54.6 222 52.4 205 52 L60 52 C40 52 22 56 8 59.2 L8 60.8 C22 64 40 68 60 68 L205 68 C222 67.6 233 65.4 237 60Z" fill="url(#sbf)" stroke="#8c9ab0" stroke-width=".7"/>
+    <path d="M30 60 L74 60" stroke="#c9a35e" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M70 55.6 L200 55.6 M70 64.4 L200 64.4" stroke="#55657f" stroke-width="1.5" stroke-dasharray="2.2 3.4" fill="none"/>
+    <path d="M219 56.6 Q231 57.8 233.4 60 Q231 62.2 219 63.4 Q222.4 60 219 56.6Z" fill="#26344d"/>
+    <path d="M40 54.4 L212 54.4" stroke="#fff" stroke-width="1" opacity=".85" fill="none"/>
+  </symbol>
+</defs></svg>
 <div class="w" id="app"></div><div id="modal-host"></div>
 <script>
 const $=id=>document.getElementById(id),app=$('app');
@@ -3571,8 +3913,142 @@ function bindHead(){
   updateThemeIcon();
 }
 
+/* ---------- Food plate SVG art helper from _meal_art.html ---------- */
+function mealPlateSvg(code) {
+  const c = (code || '').toLowerCase();
+  let inside = '';
+  if (c.includes('nav')) {
+    inside = `<ellipse cx="36" cy="38" rx="17" ry="15" fill="#D98A43"/>
+      <ellipse cx="36" cy="35" rx="16" ry="13" fill="#F3BD65"/>
+      <path d="M25 31q6-9 11 0t11 0" fill="none" stroke="#FFE2A5" stroke-width="2.2" stroke-linecap="round"/>
+      <g fill="#B96A30"><circle cx="27" cy="39" r="3.6"/><circle cx="40" cy="34" r="3.3"/><circle cx="44" cy="43" r="3.5"/><circle cx="33" cy="45" r="3.1"/></g>
+      <path d="M50 22q-1-10 8-11-1 10-8 11Z" fill="#4F9160"/><circle cx="19" cy="49" r="4.5" fill="#FFFDF6" stroke="#D9C7A9"/>`;
+  } else if (c.includes('jain')) {
+    inside = `<ellipse cx="36" cy="39" rx="19" ry="15" fill="#6F9C62"/>
+      <ellipse cx="36" cy="36" rx="18" ry="14" fill="#9EBE74"/>
+      <path d="M22 41q7-13 13-2t15-3" fill="none" stroke="#DDE8A1" stroke-width="2.5" stroke-linecap="round"/>
+      <g fill="#D7654E"><circle cx="27" cy="32" r="3.5"/><circle cx="42" cy="41" r="3.2"/></g>
+      <g fill="#F5D68A"><circle cx="36" cy="29" r="3"/><circle cx="47" cy="33" r="2.5"/></g>`;
+  } else if (c.includes('halal')) {
+    inside = `<ellipse cx="36" cy="39" rx="18" ry="15" fill="#B64B35"/>
+      <ellipse cx="36" cy="36" rx="17" ry="13" fill="#D97043"/>
+      <path d="M23 34q12-7 25 2" fill="none" stroke="#F6C17A" stroke-width="2.2" stroke-linecap="round"/>
+      <g fill="#F7D890"><circle cx="29" cy="40" r="3.5"/><circle cx="41" cy="32" r="3.2"/><circle cx="44" cy="43" r="3.1"/></g>
+      <path d="M51 21q1-9 10-8-2 9-10 8Z" fill="#4D8A54"/>`;
+  } else if (c.includes('sat')) {
+    inside = `<ellipse cx="36" cy="39" rx="18" ry="15" fill="#8B9E56"/>
+      <ellipse cx="36" cy="36" rx="17" ry="13" fill="#C2C97B"/>
+      <g fill="#8C9D4D"><circle cx="28" cy="31" r="4"/><circle cx="42" cy="33" r="4"/><circle cx="34" cy="42" r="4.5"/></g>
+      <path d="M26 39q8-8 17 1" fill="none" stroke="#E7E3A8" stroke-width="2.5" stroke-linecap="round"/>`;
+  } else if (c.includes('nut')) {
+    inside = `<ellipse cx="36" cy="39" rx="18" ry="15" fill="#D7B96E"/>
+      <ellipse cx="36" cy="36" rx="17" ry="13" fill="#F4E6B7"/>
+      <g fill="#FFFFFF" stroke="#E1D5B8" stroke-width=".7"><ellipse cx="28" cy="34" rx="4" ry="3"/><ellipse cx="37" cy="30" rx="4" ry="3"/><ellipse cx="44" cy="37" rx="4" ry="3"/></g>
+      <g fill="#E37A50"><rect x="23" y="43" width="7" height="3.5" rx="1.7" transform="rotate(-27 23 43)"/><rect x="42" y="29" width="7" height="3.5" rx="1.7" transform="rotate(24 42 29)"/></g>`;
+  } else {
+    inside = `<ellipse cx="36" cy="39" rx="18" ry="15" fill="#D9A65C"/>
+      <ellipse cx="36" cy="36" rx="17" ry="13" fill="#F4D58F"/>
+      <g fill="#F7EAC3"><circle cx="28" cy="33" r="3.5"/><circle cx="37" cy="30" r="3.5"/><circle cx="44" cy="37" r="3.5"/></g>
+      <path d="M50 22q-2-9 8-11 1 9-8 11Z" fill="#51905B"/>`;
+  }
+
+  return `<svg viewBox="0 0 76 76" style="width:100%;height:auto;display:block" aria-hidden="true">
+    <ellipse cx="39" cy="60" rx="24" ry="5" fill="#39291B" opacity=".09"/>
+    <circle cx="38" cy="36" r="30" fill="#FFFFFF" stroke="#D7C9B4" stroke-width="1.6"/>
+    <circle cx="38" cy="36" r="25" fill="#F7F0E4" stroke="#E7DAC5" stroke-width="1"/>
+    ${inside}
+    <path d="M19 54q18 7 37 0" fill="none" stroke="#D8C9B2" stroke-width="1" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function flightbarHtml() {
+  return `<div class="flightbar" id="flightbar" aria-hidden="true">
+    <span class="fb-city">TOKYO (HND)</span>
+    <div class="fb-track">
+      <span class="fb-done" id="fb-done"></span>
+      <svg class="fb-plane" id="fb-plane" viewBox="0 0 240 120"><use href="#sb-plane"/></svg>
+    </div>
+    <span class="fb-city">DELHI (DEL)</span>
+  </div>`;
+}
+
+function flightRouteHtml() {
+  return `
+  <div class="flight-route-section" id="flight-route-section" data-hero>
+    <div class="flight-stage" id="flight-stage" data-stage>
+      <div class="flight-copy" data-hero-copy>
+        <span class="kicker">âœˆ LIVE AIRWAY ROUTE Â· FLIGHT JL 754</span>
+        <h2>Tokyo (HND) âž” <em>Delhi (DEL)</em></h2>
+        <p>Scroll down to cruise along the 5,850 km flight path. Watch the Boeing 787 tilt with aerodynamic banking physics and vapor trails.</p>
+      </div>
+      <svg class="route" data-route aria-hidden="true" viewBox="0 0 1000 480" preserveAspectRatio="none">
+        <path class="route-base" id="route-base" data-route-base/>
+        <path class="route-trail" id="route-trail" data-route-trail/>
+        <path class="route-done" id="route-done" data-route-done/>
+      </svg>
+      <div class="plane" id="flight-plane" data-plane aria-hidden="true">
+        <svg viewBox="0 0 240 120"><use href="#sb-plane"/></svg>
+      </div>
+      <div class="city from">
+        <small>DEPARTURE</small>
+        <b>HND</b>
+        <span>Tokyo Haneda Â· 11:20 JST</span>
+      </div>
+      <div class="city to">
+        <small>ARRIVAL</small>
+        <b>DEL</b>
+        <span>Delhi Indira Gandhi Â· 16:45 IST</span>
+      </div>
+      <div class="flight-meta">
+        <span><small>FLIGHT</small><b>JL 754</b></span>
+        <span><small>AIRCRAFT</small><b>Boeing 787-9</b></span>
+        <span><small>ALTITUDE</small><b id="telemetry-alt">38,000 FT</b></span>
+        <span><small>SPEED</small><b id="telemetry-spd">895 KM/H</b></span>
+        <span class="status"><i></i><b id="flight-status" data-status>READY FOR DEPARTURE</b></span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function menuCarouselHtml() {
+  const showcaseMeals = [
+    { code: 'nav', color: '#d97706', tag: 'SEASONAL FASTING', name: 'Navratri Royal Vrat Thali', desc: 'Sabudana pearl khichdi, singhare ki puri, creamy yogurt & rock salt tempering. 100% Satvik.' },
+    { code: 'jain', color: '#059669', tag: 'STRICT RELIGIOUS', name: 'Strict Jain Shahi Thali', desc: 'Moong dal tadka, jeera rice, steamed raw banana & zero root vegetables, onion or garlic.' },
+    { code: 'halal', color: '#dc2626', tag: 'CERTIFIED HALAL', name: 'Halal Awadhi Dum Biryani', desc: 'Tender marinated halal chicken, long-grain fragrant basmati, saffron drizzle & fresh mint raita.' },
+    { code: 'sat', color: '#16a34a', tag: 'AYURVEDIC HEALING', name: 'Sattvik Ayurvedic Bowl', desc: 'Swaminarayan approved pure vegetarian bowl with fresh seasonal greens, ginger & cow ghee.' },
+    { code: 'nut', color: '#0284c7', tag: '15-ALLERGEN SAFE', name: 'Nut-Safe Diabetic Wellness', desc: 'Low glycemic foxtail millet pilaf, steamed broccoli florets & zero peanut/tree nut contact.' },
+    { code: 'sakura', color: '#db2777', tag: 'GHOST KITCHEN', name: 'Sakura Lounge Chef Bento', desc: 'Prepped within 2h in Haneda Sakura Lounge for last-minute boarding swaps. Tamagoyaki & edamame.' }
+  ];
+
+  return `
+  <section class="menu-carousel-section" id="menu-carousel-section" data-menu>
+    <div class="menu-carousel-head" data-reveal>
+      <span class="kicker">âœ³ CURATED FOR YOUR FLIGHT</span>
+      <h2>Flavours for <em>every cultural preference.</em></h2>
+      <p>Scroll down vertically to glide through this 3D carousel sideways. Click any meal to view passenger options.</p>
+    </div>
+    <div class="menu-stage" id="menu-stage" data-scroller>
+      <div class="menu-track" id="menu-track" data-track>
+        ${showcaseMeals.map((m, idx) => `
+          <div class="mcard" data-mcard data-tilt style="--meal:${m.color}" onclick="role='p';render();window.scrollTo({top:0,behavior:'smooth'});">
+            <div class="mcard-art">
+              <span class="num">0${idx + 1}</span>
+              <span class="art">${mealPlateSvg(m.code)}</span>
+            </div>
+            <div class="mcard-body">
+              <small>${m.tag}</small>
+              <h3>${m.name}</h3>
+              <p>${m.desc}</p>
+              <div class="mcard-go">Choose for my booking âž”</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>`;
+}
 function render(){
-if(!role){app.innerHTML=`<header class="top-nav">
+if(!role){app.innerHTML=`${flightbarHtml()}<header class="top-nav">
   <div class="brand-group">
     <div class="brand-logo">
       <img src="logo.png" alt="SkyBite" class="brand-logo-img">
@@ -3665,6 +4141,10 @@ if(!role){app.innerHTML=`<header class="top-nav">
 ${demoHtml()}
 
 ${ideasHtml(false)}
+
+${flightRouteHtml()}
+
+${menuCarouselHtml()}
 
 
 
@@ -4427,6 +4907,137 @@ start();
 /* ======================================================================
    SCROLLING ANIMATIONS CONTROLLER (From SkyBite Reference passenger.js)
    ====================================================================== */
+/* ---------- Layout SVG curve for flight stage ---------- */
+let flightRouteLen = 1000;
+let flightAngle = 0;
+let smoothFlightT = 0;
+let menuCurTx = 0;
+
+function layoutRoute() {
+  const stage = document.getElementById('flight-stage');
+  const routeBase = document.getElementById('route-base');
+  const routeTrail = document.getElementById('route-trail');
+  const routeDone = document.getElementById('route-done');
+  if (!stage || !routeBase) return;
+  const W = stage.clientWidth || window.innerWidth;
+  const H = stage.clientHeight || 440;
+  const P = (fx, fy) => `${(fx * W).toFixed(1)} ${(fy * H).toFixed(1)}`;
+  const d = `M${P(0.08, 0.78)} C${P(0.28, 0.22)} ${P(0.44, 0.85)} ${P(0.62, 0.38)} S${P(0.82, 0.22)} ${P(0.92, 0.52)}`;
+  [routeBase, routeTrail, routeDone].forEach(p => { if (p) p.setAttribute('d', d); });
+  if (routeBase.getTotalLength) {
+    flightRouteLen = routeBase.getTotalLength();
+    if (routeDone) routeDone.style.strokeDasharray = flightRouteLen;
+  }
+}
+window.addEventListener('resize', layoutRoute);
+
+/* ---------- Horizontal 3D Menu Carousel driven by Vertical Scroll ---------- */
+function placeMenuCards(snap) {
+  const sc = document.getElementById('menu-stage');
+  const track = document.getElementById('menu-track');
+  if (!sc || !track) return;
+  const cards = Array.from(track.querySelectorAll('.mcard'));
+  if (!cards.length) return;
+  const r = sc.getBoundingClientRect();
+  const H = window.innerHeight;
+  const p = Math.min(1, Math.max(0, (0.85 * H - r.top) / (0.85 * H + r.height * 0.45)));
+  const menuDist = Math.max(0, track.scrollWidth - sc.clientWidth);
+  menuCurTx = snap ? -p * menuDist : (menuCurTx + (-p * menuDist - menuCurTx) * 0.12);
+  track.style.transform = `translate3d(${menuCurTx.toFixed(1)}px,0,0)`;
+  const mid = sc.clientWidth / 2;
+  cards.forEach(c => {
+    const cardMid = c.offsetLeft + c.offsetWidth / 2 + menuCurTx;
+    const d = (cardMid - mid) / sc.clientWidth;
+    const a = Math.abs(d);
+    c.style.transform = `translate3d(0,${(a * 24).toFixed(1)}px,0) scale(${(1 - Math.min(a, 1) * 0.08).toFixed(3)})`;
+  });
+}
+
+/* ---------- Main Scroll Animation Frame Loop ---------- */
+function scrollAnimationFrame(time) {
+  const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const scrollPage = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+
+  // 1. Top flightbar plane riding across as you scroll
+  const fbDone = document.getElementById('fb-done');
+  const fbPlane = document.getElementById('fb-plane');
+  if (fbDone) fbDone.style.transform = `scaleX(${scrollPage})`;
+  if (fbPlane) fbPlane.style.left = `${scrollPage * 100}%`;
+
+  // 2. Flight route Boeing 787 jet banking and flying along airway as you scroll
+  const routeBase = document.getElementById('route-base');
+  const routeTrail = document.getElementById('route-trail');
+  const routeDone = document.getElementById('route-done');
+  const planeEl = document.getElementById('flight-plane');
+  const altEl = document.getElementById('telemetry-alt');
+  const spdEl = document.getElementById('telemetry-spd');
+  const statusEl = document.getElementById('flight-status');
+  const stage = document.getElementById('flight-stage');
+
+  if (routeBase && planeEl && flightRouteLen > 10) {
+    let t = 0;
+    if (stage) {
+      const rect = stage.getBoundingClientRect();
+      const H = window.innerHeight;
+      t = Math.min(1, Math.max(0, (H * 0.7 - rect.top) / (H * 0.95)));
+    }
+    smoothFlightT = smoothFlightT + (t - smoothFlightT) * 0.12;
+    const curT = Math.min(0.999, Math.max(0.001, smoothFlightT));
+    const head = curT * flightRouteLen;
+    const trail = Math.min(head, Math.min(window.innerWidth * 0.28, 380));
+
+    if (routeDone) routeDone.style.strokeDashoffset = flightRouteLen * (1 - curT);
+    if (routeTrail) {
+      routeTrail.style.strokeDasharray = `${trail} ${flightRouteLen}`;
+      routeTrail.style.strokeDashoffset = -(head - trail);
+    }
+
+    try {
+      const p = routeBase.getPointAtLength(head);
+      const a = routeBase.getPointAtLength(Math.min(flightRouteLen, head + 15));
+      const b = routeBase.getPointAtLength(Math.max(0, head - 15));
+      const targetAngle = Math.atan2(a.y - b.y, a.x - b.x);
+      flightAngle = flightAngle + (targetAngle - flightAngle) * 0.18;
+
+      const alt = Math.min(1, curT / 0.3);
+      const pw = Math.min(150, Math.max(80, window.innerWidth * 0.13));
+      const bob = Math.sin((time || 0) * 0.002) * 2.5;
+
+      planeEl.style.width = pw + 'px';
+      planeEl.style.setProperty('--alt', alt.toFixed(3));
+      planeEl.style.transform = `translate3d(${(p.x - pw / 2).toFixed(1)}px,${(p.y - pw / 4 + bob).toFixed(1)}px,0) rotate(${(flightAngle * 57.2958).toFixed(2)}deg) scale(${(0.8 + 0.2 * alt).toFixed(3)})`;
+    } catch (e) {}
+
+    if (statusEl) {
+      if (curT < 0.06) {
+        statusEl.textContent = 'READY FOR DEPARTURE Â· HND';
+        if (altEl) altEl.textContent = '0 FT';
+        if (spdEl) spdEl.textContent = '0 KM/H';
+      } else if (curT < 0.28) {
+        statusEl.textContent = `CLIMBING AIRWAY Â· ${Math.round(curT * 100)}%`;
+        if (altEl) altEl.textContent = `${Math.round(curT * 38000).toLocaleString()} FT`;
+        if (spdEl) spdEl.textContent = `${Math.round(300 + curT * 595)} KM/H`;
+      } else if (curT < 0.90) {
+        statusEl.textContent = `CRUISING Â· ${Math.round(curT * 100)}% (38,000 FT)`;
+        if (altEl) altEl.textContent = '38,000 FT';
+        if (spdEl) spdEl.textContent = '895 KM/H';
+      } else {
+        statusEl.textContent = 'APPROACHING RUNWAY Â· DEL';
+        if (altEl) altEl.textContent = '2,400 FT';
+        if (spdEl) spdEl.textContent = '280 KM/H';
+      }
+    }
+  }
+
+  // 3. Gliding 3D Menu Cards
+  placeMenuCards();
+
+  requestAnimationFrame(scrollAnimationFrame);
+}
+
+// Start frame loop and layout
+layoutRoute();
+requestAnimationFrame(scrollAnimationFrame);
 function initScrollAnimations() {
   if (typeof IntersectionObserver !== 'undefined') {
     const io = new IntersectionObserver((entries) => {
@@ -4449,6 +5060,8 @@ function initScrollAnimations() {
   }
 
   // 3D Card Tilt on pointermove (From passenger.js)
+  layoutRoute();
+  placeMenuCards(true);
   document.querySelectorAll('[data-tilt]').forEach((el) => {
     if (el._hasTilt) return;
     el._hasTilt = true;
